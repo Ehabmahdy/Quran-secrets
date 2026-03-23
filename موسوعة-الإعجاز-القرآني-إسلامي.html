@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>موسوعة الإعجاز القرآني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2ede4;
+  --bg2:#ede6d9;
+  --bg3:#e5dccf;
+  --card:#faf7f2;
+  --card2:#f5f0e8;
+  --gold:#b8973a;
+  --gold2:#d4af5a;
+  --gold3:#e8c97a;
+  --gold-light:rgba(184,151,58,0.12);
+  --gold-mid:rgba(184,151,58,0.25);
+  --brown:#5d4e37;
+  --brown2:#7a6448;
+  --brown3:#9c7d54;
+  --text:#3d2f1e;
+  --text2:#5d4e37;
+  --text3:#8a7260;
+  --border:rgba(184,151,58,0.3);
+  --border2:rgba(93,78,55,0.15);
+  --sci:#2d7a5e;
+  --sci-bg:rgba(45,122,94,0.1);
+  --num:#6b4fa0;
+  --num-bg:rgba(107,79,160,0.1);
+  --med:#a04040;
+  --med-bg:rgba(160,64,64,0.1);
+  --psy:#2a6080;
+  --psy-bg:rgba(42,96,128,0.1);
+  --his:#7a5a20;
+  --his-bg:rgba(122,90,32,0.1);
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+
+/* geometric pattern overlay */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(184,151,58,0.07) 39px,rgba(184,151,58,0.07) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(184,151,58,0.07) 39px,rgba(184,151,58,0.07) 40px);
+}
+
+.app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;position:relative;z-index:1}
+
+/* === TOP BAR === */
+.topbar{
+  padding:14px 16px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+  border-bottom:1px solid var(--border2);
+  background:var(--card);
+}
+.tb-left{display:flex;flex-direction:column}
+.tb-logo{font-size:15px;font-weight:600;color:var(--gold);letter-spacing:.2px}
+.tb-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.tb-counter{font-size:12px;color:var(--text3);font-weight:500}
+.tb-share{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--gold-light);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s
+}
+.tb-share:hover{background:var(--gold-mid);border-color:var(--gold)}
+.tb-share svg{width:14px;height:14px;stroke:var(--gold)}
+
+/* === ORN === */
+.orn{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 0;flex-shrink:0;background:var(--card)}
+.orn-line{flex:1;height:1px;background:linear-gradient(to left,transparent,var(--gold),transparent)}
+.orn-diamond{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex-shrink:0}
+.orn-dot{width:4px;height:4px;background:var(--gold3);border-radius:50%;flex-shrink:0}
+
+/* === PROGRESS === */
+.progress-row{padding:0 16px 6px;display:flex;gap:4px;flex-shrink:0;background:var(--card)}
+.prog-seg{flex:1;height:3px;border-radius:2px;background:var(--bg3);overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;transition:width .3s}
+.prog-fill.done{width:100%}
+
+/* === CATEGORY TABS === */
+.cats{
+  padding:8px 16px 10px;
+  display:flex;gap:6px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;
+  background:var(--card);border-bottom:1px solid var(--border2);
+}
+.cats::-webkit-scrollbar{display:none}
+.cat{
+  padding:6px 13px;border-radius:20px;font-size:11px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);
+  background:transparent;color:var(--text3);
+  white-space:nowrap;transition:all .2s;flex-shrink:0;
+}
+.cat.on{color:var(--card);border-color:transparent;font-weight:600}
+
+/* === REEL AREA === */
+.reel-wrap{flex:1;overflow:hidden;position:relative;padding:10px 14px 6px;background:var(--bg)}
+.reel{height:100%;position:relative;overflow:hidden}
+.card{
+  position:absolute;inset:0;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s;
+  box-shadow:0 2px 20px rgba(93,78,55,0.08);
+}
+.card.prev{transform:translateX(100%);opacity:0}
+.card.next{transform:translateX(-100%);opacity:0}
+
+/* card accent bar — top decorative strip */
+.c-top-strip{height:4px;width:100%;flex-shrink:0}
+/* inner corner ornament */
+.c-inner-orn{
+  display:flex;align-items:center;gap:4px;
+  padding:10px 16px 0;flex-shrink:0
+}
+.c-orn-line{flex:1;height:0.5px;background:var(--border)}
+.c-orn-dm{width:5px;height:5px;transform:rotate(45deg);flex-shrink:0;border:1px solid var(--gold)}
+
+.c-body{flex:1;display:flex;flex-direction:column;padding:10px 16px 14px;overflow:hidden}
+.c-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  font-size:10px;font-weight:600;border:1px solid;
+  margin-bottom:12px;align-self:flex-start;letter-spacing:.3px;
+}
+.c-badge-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.c-num-block{margin-bottom:8px}
+.c-num{font-size:52px;font-weight:600;line-height:1;letter-spacing:-2px}
+.c-num-label{font-size:11px;margin-top:2px;color:var(--text3)}
+.c-title{font-size:17px;font-weight:600;line-height:1.45;margin-bottom:12px;color:var(--text)}
+.c-ayah-wrap{
+  border-radius:12px;
+  padding:14px 16px 10px;
+  margin-bottom:12px;
+  flex-shrink:0;
+  position:relative;
+  background:var(--card2);
+  border:1px solid var(--border);
+}
+.c-ayah{
+  font-family:'Amiri',serif;
+  font-size:19px;line-height:2.1;
+  color:var(--text);text-align:center
+}
+.c-ref{
+  font-size:11px;text-align:center;
+  margin-top:6px;color:var(--gold);
+  font-weight:500
+}
+.c-scroll{flex:1;overflow-y:auto;scrollbar-width:none}
+.c-scroll::-webkit-scrollbar{display:none}
+.c-fact{font-size:13px;line-height:1.9;color:var(--text2);margin-bottom:10px}
+.c-wow{
+  border-radius:10px;padding:11px 13px;
+  font-size:12px;line-height:1.7;
+  border:1px solid var(--border);
+  background:var(--gold-light);
+}
+.c-wow-label{
+  font-size:9px;font-weight:700;
+  letter-spacing:.8px;margin-bottom:5px;
+  text-transform:uppercase;color:var(--gold)
+}
+.c-wow-text{color:var(--text2)}
+/* bottom orn */
+.c-bot-orn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 16px 12px;flex-shrink:0
+}
+.c-bot-line{flex:1;height:0.5px;background:var(--border)}
+.c-bot-dm{width:6px;height:6px;transform:rotate(45deg);background:var(--gold3);flex-shrink:0}
+.c-bot-dot{width:3px;height:3px;border-radius:50%;background:var(--gold3);flex-shrink:0}
+
+/* === NAV === */
+.nav-row{
+  padding:8px 16px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;gap:10px;
+  background:var(--card);
+  border-top:1px solid var(--border2);
+}
+.nav-btn{
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--gold-light);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s
+}
+.nav-btn:hover{background:var(--gold-mid);border-color:var(--gold)}
+.nav-btn:active{transform:scale(.92)}
+.nav-btn svg{width:15px;height:15px;stroke:var(--brown2)}
+.nav-dots{display:flex;gap:5px;align-items:center;justify-content:center;flex:1}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--bg3);transition:all .25s;cursor:pointer;border:1px solid var(--border2)}
+.ndot.on{width:16px;border-radius:3px;border-color:transparent}
+
+/* === TOAST === */
+.toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;padding:9px 18px;
+  font-size:12px;color:var(--text);
+  opacity:0;transition:all .3s;
+  pointer-events:none;white-space:nowrap;z-index:100;
+  box-shadow:0 4px 16px rgba(93,78,55,0.15);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* === SPLASH === */
+.splash{
+  position:fixed;inset:0;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:200;transition:opacity .5s;
+  padding:32px;
+}
+/* geometric bg for splash */
+.splash::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(184,151,58,0.08) 39px,rgba(184,151,58,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(184,151,58,0.08) 39px,rgba(184,151,58,0.08) 40px);
+  pointer-events:none;
+}
+.splash.hidden{opacity:0;pointer-events:none}
+.splash-badge{
+  font-family:'Amiri',serif;font-size:42px;color:var(--gold);
+  margin-bottom:16px;position:relative;z-index:1
+}
+.splash-orn{
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;position:relative;z-index:1;width:200px;
+}
+.splash-orn-line{flex:1;height:1px;background:linear-gradient(to left,transparent,var(--gold),transparent)}
+.splash-orn-dm{width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
+.splash-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;position:relative;z-index:1;text-align:center}
+.splash-title2{font-size:14px;color:var(--gold);font-family:'Amiri',serif;margin-bottom:12px;position:relative;z-index:1}
+.splash-sub{font-size:13px;color:var(--text3);text-align:center;line-height:1.8;margin-bottom:32px;position:relative;z-index:1;max-width:320px}
+.splash-btn{
+  padding:14px 44px;border-radius:12px;
+  background:var(--gold);color:var(--card);
+  font-family:'IBM Plex Sans Arabic',sans-serif;
+  font-size:15px;font-weight:600;border:none;cursor:pointer;
+  transition:opacity .2s;position:relative;z-index:1;
+  box-shadow:0 4px 20px rgba(184,151,58,0.4);
+}
+.splash-btn:active{opacity:.85}
+.splash-count{
+  display:flex;gap:24px;margin-bottom:24px;position:relative;z-index:1
+}
+.splash-cnt{text-align:center}
+.splash-cnt-n{font-size:22px;font-weight:700;color:var(--gold)}
+.splash-cnt-l{font-size:11px;color:var(--text3)}
+
+/* === SHARE MODAL === */
+.modal-bg{
+  position:fixed;inset:0;
+  background:rgba(61,47,30,0.5);
+  z-index:150;display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .3s
+}
+.modal-bg.show{opacity:1;pointer-events:all}
+.modal{
+  width:100%;max-width:480px;margin:0 auto;
+  background:var(--card);
+  border-radius:20px 20px 0 0;
+  padding:18px 18px 28px;
+  transform:translateY(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  border-top:1px solid var(--border);
+}
+.modal-bg.show .modal{transform:translateY(0)}
+.modal-handle{width:36px;height:3px;border-radius:2px;background:var(--border);margin:0 auto 16px}
+.modal-orn{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.modal-orn-line{flex:1;height:0.5px;background:var(--border)}
+.modal-orn-dm{width:5px;height:5px;transform:rotate(45deg);background:var(--gold);flex-shrink:0}
+.modal-title{font-size:14px;font-weight:600;color:var(--text);text-align:center}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}
+.share-btn{
+  padding:12px 6px;border-radius:12px;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  cursor:pointer;text-align:center;transition:all .2s;
+}
+.share-btn:hover{background:var(--gold-light);border-color:var(--border)}
+.share-btn-icon{font-size:20px;margin-bottom:4px}
+.share-btn-label{font-size:10px;color:var(--text3)}
+.modal-close{
+  width:100%;padding:11px;border-radius:10px;
+  background:var(--gold-light);border:1px solid var(--border);
+  color:var(--text2);font-family:'IBM Plex Sans Arabic',sans-serif;
+  font-size:13px;cursor:pointer;
+}
+
+@media(min-width:520px){
+  body{background:#ddd6c9}
+  .app{box-shadow:0 0 40px rgba(93,78,55,0.15);border:1px solid var(--border2)}
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .35s ease forwards}
+</style>
+</head>
+<body>
+
+<div class="splash" id="splash">
+  <div class="splash-badge">بسم الله</div>
+  <div class="splash-orn"><div class="splash-orn-line"></div><div class="splash-orn-dm"></div><div class="splash-orn-line"></div></div>
+  <div class="splash-title">موسوعة الإعجاز القرآني</div>
+  <div class="splash-title2">﴿ وَفِي كُلِّ شَيْءٍ لَهُ آيَةٌ ﴾</div>
+  <div class="splash-sub">اكتشف كيف سبق القرآن الكريم العلم الحديث بـ 1400 سنة — في 28 رحلة مصوّرة</div>
+  <div class="splash-count">
+    <div class="splash-cnt"><div class="splash-cnt-n">28</div><div class="splash-cnt-l">بطاقة</div></div>
+    <div class="splash-cnt"><div class="splash-cnt-n">5</div><div class="splash-cnt-l">أقسام</div></div>
+    <div class="splash-cnt"><div class="splash-cnt-n">1400</div><div class="splash-cnt-l">سنة سبق</div></div>
+  </div>
+  <button class="splash-btn" onclick="hideSplash()">ابدأ الاستكشاف</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-orn"><div class="modal-orn-line"></div><div class="modal-orn-dm"></div><div class="modal-title">شارك موسوعة الإعجاز</div><div class="modal-orn-dm"></div><div class="modal-orn-line"></div></div>
+    <div class="share-grid">
+      <div class="share-btn" onclick="copyHTML()"><div class="share-btn-icon">📋</div><div class="share-btn-label">نسخ الرابط</div></div>
+      <div class="share-btn" onclick="downloadFile()"><div class="share-btn-icon">💾</div><div class="share-btn-label">تحميل HTML</div></div>
+      <div class="share-btn" onclick="copyCurrentCard()"><div class="share-btn-icon">🃏</div><div class="share-btn-label">نسخ البطاقة</div></div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">إغلاق</button>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">موسوعة الإعجاز القرآني</div>
+      <div class="tb-sub">﴿ سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ ﴾</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="tb-counter" id="counter">1 / 6</div>
+      <button class="tb-share" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="orn">
+    <div class="orn-line"></div>
+    <div class="orn-dot"></div><div class="orn-diamond"></div><div class="orn-dot"></div>
+    <div class="orn-line"></div>
+  </div>
+
+  <div class="progress-row" id="progressRow"></div>
+  <div class="cats" id="catsRow"></div>
+
+  <div class="reel-wrap">
+    <div class="reel" id="reel"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="btnPrev" onclick="go(-1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="nav-dots" id="navDots"></div>
+    <button class="nav-btn" id="btnNext" onclick="go(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  sci:{label:'الإعجاز العلمي',color:'#2d7a5e',dim:'rgba(45,122,94,0.1)',stripe:'#2d7a5e',cards:[
+    {title:'مراحل خلق الإنسان',ayah:'﴿ثُمَّ خَلَقْنَا النُّطْفَةَ عَلَقَةً فَخَلَقْنَا الْعَلَقَةَ مُضْغَةً فَخَلَقْنَا الْمُضْغَةَ عِظَامًا فَكَسَوْنَا الْعِظَامَ لَحْمًا﴾',ref:'المؤمنون: 14',fact:'وصف القرآن 6 مراحل دقيقة لتطور الجنين: نطفة ← علقة (تعلق بجدار الرحم) ← مضغة (كالقطعة الممضوغة) ← عظام ← كسوة بلحم ← إنشاء خلق جديد. علم الأجنة الحديث أكد هذا الترتيب حرفياً فقط في القرن العشرين.',wow:'أ.د. كيث مور — أستاذ علم الأجنة في كندا — قال بعد دراسة هذه الآيات: "كانت معلوماتنا عن مراحل الجنين في القرن السابع بدائية جداً… هذا لا يمكن أن يكون من إنسان."',wow_label:'قاله العلماء'},
+    {title:'الانفجار العظيم في القرآن',ayah:'﴿أَوَلَمْ يَرَ الَّذِينَ كَفَرُوا أَنَّ السَّمَاوَاتِ وَالْأَرْضَ كَانَتَا رَتْقًا فَفَتَقْنَاهُمَا﴾',ref:'الأنبياء: 30',fact:'"رتقاً" = الشيء المتلاصق الموصود. "ففتقناهما" = فصلناهما بعنف. هذا وصف مذهل الدقة لنظرية الانفجار العظيم (Big Bang) التي لم يُثبتها العلم إلا عام 1929 على يد إدوين هابل.',wow:'الكون كله كان في نقطة واحدة بلا حجم — ثم انفجر وتوسّع. "كانتا رتقاً" (كتلة واحدة) "ففتقناهما" (فصلناهما وتوسّعا). NASA تقول نفس الكلام بلغة مختلفة.',wow_label:'الفيزياء تقول'},
+    {title:'البحرين لا يختلطان',ayah:'﴿مَرَجَ الْبَحْرَيْنِ يَلْتَقِيَانِ بَيْنَهُمَا بَرْزَخٌ لَّا يَبْغِيَانِ﴾',ref:'الرحمن: 19–20',fact:'البحر الأبيض المتوسط والمحيط الأطلسي يلتقيان عند مضيق جبل طارق. بينهما حاجز "هالوكلين" — فارق في الكثافة والملوحة والحرارة — يمنع الاختلاط. اكتشفه العلم في القرن العشرين بالأجهزة المتقدمة.',wow:'الماء العذب والمالح يلتقيان في مصبّات الأنهار أيضاً ولا يختلطان بسبب "حاجز باروكلين" — ظاهرة مختلفة ذكرها القرآن في سورة الفرقان.',wow_label:'حقيقة مذهلة'},
+    {title:'الجبال أوتاد تحت الأرض',ayah:'﴿أَلَمْ نَجْعَلِ الْأَرْضَ مِهَادًا وَالْجِبَالَ أَوْتَادًا﴾',ref:'النبأ: 6–7',fact:'الوتد: جزؤه الأكبر تحت الأرض وجزء صغير فوقها. الجيولوجيا الحديثة اكتشفت أن للجبال "جذوراً" عميقة تفوق ارتفاعها الظاهر أضعافاً. جبل إيفرست ارتفاعه 8.8 كم وجذره يصل 35–40 كم تحت الأرض.',wow:'وظيفة الجبال الأساسية ليست الارتفاع — بل التثبيت. تمنع القشرة الأرضية من الانزلاق. الآية: "وجعلنا فيها رواسي" — من الرسو = التثبيت.',wow_label:'الجيولوجيا تؤكد'},
+    {title:'الحديد نزل من السماء',ayah:'﴿وَأَنزَلْنَا الْحَدِيدَ فِيهِ بَأْسٌ شَدِيدٌ وَمَنَافِعُ لِلنَّاسِ﴾',ref:'الحديد: 25',fact:'لاحظ الكلمة: "أنزلنا" — لم يقل "خلقنا". الفيزياء النووية تؤكد: الحديد لا يمكن تكوينه في نجوم عادية. يتكون فقط في انفجارات النجوم العملاقة (Supernova) ثم يصل للكواكب عبر النيازك. الحديد حرفياً "نزل" من السماء.',wow:'رقم ذروة الحديد الذري هو 26. الرقم الذري للحديد 26. عدد سورة الحديد في القرآن 57. التوافقات الرقمية في هذه السورة بالتحديد مذهلة.',wow_label:'فيزياء نووية'},
+    {title:'الظلمات الطبقية في البحر',ayah:'﴿أَوْ كَظُلُمَاتٍ فِي بَحْرٍ لُّجِّيٍّ يَغْشَاهُ مَوْجٌ مِّن فَوْقِهِ مَوْجٌ مِّن فَوْقِهِ سَحَابٌ﴾',ref:'النور: 40',fact:'الآية تصف بالترتيب: ظلمات في البحر العميق ← أمواج داخلية (underwater waves) ← أمواج سطحية ← سحاب. هذا الترتيب الدقيق لم يُكتشف إلا باختراع الغواصات في القرن العشرين.',wow:'في أعماق +200 متر: ظلام شبه كامل. في +1000 متر: ظلام مطلق. الإنسان في القرن السابع لم يكن يمكنه الغوص أكثر من عشرات الأمتار. فمن أخبر النبي ﷺ؟',wow_label:'سؤال بلا إجابة بشرية!'}
+  ]},
+  num:{label:'الإعجاز الرقمي',color:'#6b4fa0',dim:'rgba(107,79,160,0.1)',stripe:'#6b4fa0',cards:[
+    {title:'"يوم" في القرآن',num:'365',num_label:'يوم في السنة الشمسية',ayah:'﴿يُدَبِّرُ الْأَمْرَ مِنَ السَّمَاءِ إِلَى الْأَرْضِ ثُمَّ يَعْرُجُ إِلَيْهِ فِي يَوْمٍ كَانَ مِقْدَارُهُ أَلْفَ سَنَةٍ﴾',ref:'السجدة: 5',fact:'كلمة "يوم" بمفردها وردت في القرآن 365 مرة — وهو عدد أيام السنة الشمسية بالضبط. كما وردت "أيام" (الجمع) 30 مرة — عدد أيام الشهر. و"يومين" (المثنى) مرتان.',wow:'هذا توافق منهجي يشمل المفرد والجمع والمثنى في آن واحد. احتمال حدوث هذا عشوائياً ضئيل جداً رياضياً.',wow_label:'التوافق الثلاثي'},
+    {title:'"شهر" في القرآن',num:'12',num_label:'شهراً في السنة',ayah:'﴿إِنَّ عِدَّةَ الشُّهُورِ عِندَ اللَّهِ اثْنَا عَشَرَ شَهْرًا﴾',ref:'التوبة: 36',fact:'كلمة "شهر" وردت في القرآن 12 مرة — عدد الشهور في السنة. والآية نفسها تقول "اثنا عشر شهراً". التوافق بين النص والعدد.',wow:'حين يقول القرآن "الشهور عند الله 12 شهراً" ثم نعد كلمة "شهر" نجدها 12 مرة — كأن الكتاب يُصدّق نفسه بنفسه.',wow_label:'الكتاب يصدق نفسه'},
+    {title:'"الدنيا" تساوي "الآخرة"',num:'115',num_label:'مرة لكل واحدة',ayah:'﴿وَمَا أُوتِيتُم مِّن شَيْءٍ فَمَتَاعُ الْحَيَاةِ الدُّنْيَا وَزِينَتُهَا وَمَا عِندَ اللَّهِ خَيْرٌ وَأَبْقَىٰ﴾',ref:'القصص: 60',fact:'كلمة "الدنيا" وردت في القرآن 115 مرة. وكلمة "الآخرة" وردت 115 مرة بالضبط. التوازن الكامل — كأن القرآن يقول: لكل دنيا آخرة، ولكل آخرة دنيا.',wow:'هذا التوازن ليس مجرد رقمي — هو فلسفي. القرآن لا يُقلّل من الدنيا ولا يغفل الآخرة. هما وجهان متوازنان للحياة الإنسانية.',wow_label:'توازن فلسفي عميق'},
+    {title:'"الملائكة" تساوي "الشياطين"',num:'88',num_label:'مرة لكل واحدة',ayah:'﴿وَلَوْ شَاءَ اللَّهُ لَجَعَلَكُمْ أُمَّةً وَاحِدَةً وَلَٰكِن يُضِلُّ مَن يَشَاءُ وَيَهْدِي مَن يَشَاءُ﴾',ref:'النحل: 93',fact:'كلمة "الملائكة" وردت 88 مرة. وكلمة "الشياطين" وردت 88 مرة. قوة الخير والشر في الكون متوازنتان في الكتاب الذي يصف هذا الصراع.',wow:'التوازن الدقيق بين أسماء قوى الخير والشر يعكس الحقيقة الكونية: الابتلاء الإنساني يقع بين ضغطين متساويين، والاختيار للإنسان.',wow_label:'صراع كوني متوازن'},
+    {title:'"الرجل" تساوي "المرأة"',num:'24',num_label:'مرة لكل واحدة',ayah:'﴿مَنْ عَمِلَ صَالِحًا مِّن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَلَنُحْيِيَنَّهُ حَيَاةً طَيِّبَةً﴾',ref:'النحل: 97',fact:'كلمة "الرجل" وردت 24 مرة. وكلمة "المرأة" وردت 24 مرة. في الكتاب الذي أعطى المرأة حقوقاً في القرن السابع لم تحصل عليها في الغرب إلا في القرن العشرين.',wow:'"الحياة" = 145 مرة، "الموت" = 145 مرة. "النفع" = 50 مرة، "الفساد" = 50 مرة. التوافقات لا تنتهي — وكلها تعكس حقائق فلسفية عميقة.',wow_label:'المساواة رقمياً'},
+    {title:'الرقم 19 — المحور السري',num:'19',num_label:'حرفاً في البسملة',ayah:'﴿بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ﴾',ref:'مفتاح كل سورة',fact:'البسملة = 19 حرفاً. عدد سور القرآن = 114 = 19 × 6. السور المبدوءة بـ"بسم الله" = 114. مضاعفات 19 تتكرر بشكل لافت في عدد الآيات والكلمات والحروف.',wow:'الرقم 19 اكتشفه الباحثون في القرآن عام 1974. البحوث لا تزال مستمرة. بعض العلماء يعدّون هذا "رمزاً رقمياً" حمايةً للنص من التحريف.',wow_label:'اكتشاف 1974'}
+  ]},
+  med:{label:'الإعجاز الطبي',color:'#a04040',dim:'rgba(160,64,64,0.1)',stripe:'#a04040',cards:[
+    {title:'الصيام دواء شافٍ',ayah:'﴿وَأَن تَصُومُوا خَيْرٌ لَّكُمْ إِن كُنتُمْ تَعْلَمُونَ﴾',ref:'البقرة: 184',fact:'الطب الحديث اكتشف أن الصيام المتقطع يُفعّل "الالتهام الذاتي" (Autophagy) — عملية تنظيف الخلايا من الفضلات. حصل يوشينوري أوهسومي على نوبل الطب 2016 لاكتشاف هذه الآلية التي يُحفّزها الصيام.',wow:'فوائد الصيام المُثبتة: تحسين حساسية الأنسولين، تقليل الالتهابات، تعزيز صحة الدماغ. القرآن قال "خير لكم" قبل 14 قرناً بجزم كامل وبلا تردد.',wow_label:'نوبل الطب 2016'},
+    {title:'العسل شفاء للناس',ayah:'﴿يَخْرُجُ مِن بُطُونِهَا شَرَابٌ مُّخْتَلِفٌ أَلْوَانُهُ فِيهِ شِفَاءٌ لِّلنَّاسِ﴾',ref:'النحل: 69',fact:'العسل يحتوي على: هيدروجين بيروكسيد (مضاد للبكتيريا)، أنزيمات، مضادات أكسدة، وخصائص مضادة للفطريات. الطب الحديث يستخدم العسل الطبي لعلاج الجروح المقاومة للمضادات الحيوية.',wow:'ضمادات العسل (Medihoney) معتمدة رسمياً من FDA الأمريكية لعلاج الجروح المزمنة. القرآن قال "فيه شفاء" بدون تفصيل — والعلم يكتشف كل يوم سبباً جديداً.',wow_label:'معتمد من FDA'},
+    {title:'الوضوء وقاية من الأوبئة',ayah:'﴿يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا قُمْتُمْ إِلَى الصَّلَاةِ فَاغْسِلُوا وُجُوهَكُمْ وَأَيْدِيَكُمْ﴾',ref:'المائدة: 6',fact:'المسلمون يغسلون أيديهم 5 مرات يومياً على الأقل قبل كل صلاة. هذا ما توصّل إليه إيغناز سيميلفايس عام 1847 حين أثبت أن غسل الأيدي ينقذ الأرواح — وسخر منه الأطباء وقتها!',wow:'منظمة الصحة العالمية تؤكد أن غسل الأيدي بالصابون يقلل أمراض الإسهال 40% وعدوى الجهاز التنفسي 20%. الإسلام فرض هذا منذ 1400 سنة.',wow_label:'WHO تؤكد'},
+    {title:'النوم والراحة الكاملة',ayah:'﴿وَجَعَلْنَا نَوْمَكُمْ سُبَاتًا وَجَعَلْنَا اللَّيْلَ لِبَاسًا وَجَعَلْنَا النَّهَارَ مَعَاشًا﴾',ref:'النبأ: 9–11',fact:'"سُباتاً" من السَّبت = القطع والراحة التامة. العلم الحديث يكتشف أن النوم ليس "إيقافاً" للجسم — بل هو وقت تنظيف الدماغ من السموم (نظام غلمفاتيك) وتثبيت الذكريات وترميم الخلايا.',wow:'نظام الغلمفاتيك (Glymphatic System) اكتشفه العلم عام 2013 فقط: خلال النوم يضخّ الدماغ سائلاً ينظّف السموم المتراكمة. قلة النوم ترتبط بالزهايمر. القرآن قال "سُباتاً".',wow_label:'اكتشاف 2013'},
+    {title:'الخمر والإثم الأكبر',ayah:'﴿قُلْ فِيهِمَا إِثْمٌ كَبِيرٌ وَمَنَافِعُ لِلنَّاسِ وَإِثْمُهُمَا أَكْبَرُ مِن نَّفْعِهِمَا﴾',ref:'البقرة: 219',fact:'الإثم أكبر من النفع — الطب الحديث يؤكد: الكحول يضرّ الدماغ، الكبد، القلب، الجينات، ويسبب 7 أنواع من السرطان. 3 مليون شخص يموتون سنوياً بسببه وفق WHO.',wow:'لفترة طويلة اعتقد العلماء أن الكحول بكميات صغيرة "مفيد" للقلب. الأبحاث الحديثة نقضت هذا تماماً. القرآن لم يقل "لا نفع" — بل قال "الإثم أكبر". دقة مذهلة.',wow_label:'3 مليون سنوياً'}
+  ]},
+  psy:{label:'الإعجاز النفسي',color:'#2a6080',dim:'rgba(42,96,128,0.1)',stripe:'#2a6080',cards:[
+    {title:'الذكر والطمأنينة العلمية',ayah:'﴿أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾',ref:'الرعد: 28',fact:'الدراسات العلمية تثبت أن الصلاة والتأمل والذكر يرفع مستوى السيروتونين والدوبامين، ويخفض الكورتيزول (هرمون التوتر). العلاج المعرفي الروحاني (Spiritual CBT) معترف به طبياً الآن.',wow:'دراسة نُشرت في JAMA Psychiatry 2020: المتدينون المنتظمون أقل عرضة للاكتئاب بنسبة 30–40%. القرآن لم يقل "ربما" — بل قال "ألا بذكر الله" — جزم كامل.',wow_label:'JAMA Psychiatry 2020'},
+    {title:'الوسوسة والأفكار التلقائية',ayah:'﴿مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ﴾',ref:'الناس: 4–5',fact:'"الخنّاس" = الذي يظهر ثم يختفي ثم يعود. علم النفس المعرفي يُعرّف "الأفكار التلقائية السلبية" بنفس الطريقة: تأتي فجأة، تُقلق، ثم تختفي وتعود. العلاج المعرفي (CBT) يُعلّمك أن تتعرف عليها وتتجاهلها.',wow:'أحد مبادئ CBT: "الفكرة ليست حقيقة". القرآن قال: "قل أعوذ برب الناس" — اللجوء لمرجع أعلى من الفكرة نفسها. هذا بالضبط ما يُعلّمه المعالج النفسي.',wow_label:'CBT يوافق القرآن'},
+    {title:'الصبر والصمود النفسي',ayah:'﴿وَلَنَبْلُوَنَّكُم بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِّنَ الْأَمْوَالِ وَالْأَنفُسِ وَالثَّمَرَاتِ وَبَشِّرِ الصَّابِرِينَ﴾',ref:'البقرة: 155',fact:'الصبر في القرآن ليس الاستسلام السلبي — بل "الثبات مع الأمل". علم النفس الإيجابي يسمي هذا "الصمود النفسي" (Resilience). الدراسات تُثبت أن من يؤمنون بمعنى لمعاناتهم يتعافون أسرع.',wow:'فيكتور فرانكل — طبيب نفسي نجا من النازية — قال: "الإنسان الذي يعرف لماذا يعيش يستطيع تحمّل أي كيف." هذا مضمون قوله تعالى "وبشّر الصابرين".',wow_label:'علم النفس الإيجابي'},
+    {title:'النفس اللوّامة والضمير',ayah:'﴿لَا أُقْسِمُ بِيَوْمِ الْقِيَامَةِ وَلَا أُقْسِمُ بِالنَّفْسِ اللَّوَّامَةِ﴾',ref:'القيامة: 1–2',fact:'"النفس اللوّامة" — وصف دقيق لما يسميه علم النفس "الضمير" أو "الأنا الأعلى" (Superego). الجزء من نفسك الذي يُراقبك ويُحاسبك. القرآن يُقسم بها تعظيماً.',wow:'فرويد سمّى الضمير "الأنا الأعلى" في 1923. القرآن أعطاها اسماً ووصفاً وظيفياً دقيقاً "اللوّامة" — التي تلوم — قبله بـ 1300 سنة.',wow_label:'سبق فرويد بـ 13 قرناً'}
+  ]},
+  his:{label:'الإعجاز التاريخي',color:'#7a5a20',dim:'rgba(122,90,32,0.1)',stripe:'#7a5a20',cards:[
+    {title:'جسد فرعون محفوظ لليوم',ayah:'﴿فَالْيَوْمَ نُنَجِّيكَ بِبَدَنِكَ لِتَكُونَ لِمَنْ خَلْفَكَ آيَةً﴾',ref:'يونس: 92',fact:'الآية تخاطب فرعون الغارق وتَعِده أن بدنه سيُحفظ آيةً للناس. اكتشف علماء الآثار عام 1881 مومياء منبتاح — أحد من يُرجَّح أنه فرعون موسى — وجسده محفوظ في المتحف المصري حتى اليوم.',wow:'القرآن وعد بهذا قبل 1200 سنة من اكتشاف المومياوات. هذا الوعد القرآني أدهش الطبيب الفرنسي موريس بوكاي لما رأى الجسد محفوظاً فأسلم.',wow_label:'اكتشاف 1881'},
+    {title:'نبوءة انتصار الروم',ayah:'﴿الم غُلِبَتِ الرُّومُ فِي أَدْنَى الْأَرْضِ وَهُم مِّن بَعْدِ غَلَبِهِمْ سَيَغْلِبُونَ فِي بِضْعِ سِنِينَ﴾',ref:'الروم: 1–4',fact:'نزلت الآية عام 614م بعد هزيمة الروم أمام الفرس. قالت: الروم ستنتصر في "بضع سنين" (3–9 سنوات). وهذا ما حدث بالضبط — انتصر الروم على الفرس في معركة نينوى عام 627م. 9 سنوات بالضبط.',wow:'المشركون راهنوا أبا بكر أن هذا لن يحدث. فربح. النبوءة القرآنية تحققت حرفياً في وقت كانت فيه الهزيمة الرومية تبدو نهائية للجميع.',wow_label:'تحققت بعد 9 سنوات'},
+    {title:'بصمات الأصابع والهوية',ayah:'﴿أَيَحْسَبُ الْإِنسَانُ أَلَّن نَّجْمَعَ عِظَامَهُ بَلَىٰ قَادِرِينَ عَلَىٰ أَن نُّسَوِّيَ بَنَانَهُ﴾',ref:'القيامة: 3–4',fact:'الآية تُشير تحديداً إلى "البنان" (أطراف الأصابع) كدليل على دقة خلق الله. البصمات اكتُشفت علمياً كأداة تعريف هوية فريدة في القرن التاسع عشر فقط.',wow:'لماذا ذكر الله "البنان" تحديداً؟ لأن بصمة كل إنسان فريدة من بين 8 مليار إنسان. الآية تقول: الله قادر على إعادة إنسان بتفاصيله الفريدة الدقيقة.',wow_label:'فريد من بين 8 مليار'},
+    {title:'حفظ القرآن — المعجزة المستمرة',ayah:'﴿إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ﴾',ref:'الحجر: 9',fact:'القرآن هو الكتاب الوحيد في التاريخ المحفوظ حرفياً بأكثر من 10 مليون حافظ بشري حيّ. أي نسخة من أي نسخ القرآن في العالم — من إندونيسيا حتى المغرب — متطابقة حرفاً بحرف.',wow:'التوراة والإنجيل الأصليان لا توجد لهما نسخة بالغة القدم بلغتها الأصلية. القرآن محفوظ بالعربية الأصلية منذ 1400 سنة — هذا معجزة تاريخية مستمرة.',wow_label:'10 مليون حافظ'},
+    {title:'الأرض كروية لا مسطحة',ayah:'﴿يُكَوِّرُ اللَّيْلَ عَلَى النَّهَارِ وَيُكَوِّرُ النَّهَارَ عَلَى اللَّيْلِ﴾',ref:'الزمر: 5',fact:'"يكوّر" = يلفّ ويدير. التكوير لا يمكن تفسيره إلا إذا كانت الأرض كروية. الليل يلتف على النهار كما يُلفّ العمامة — تدريجياً، محيطاً بالكرة من جهة.',wow:'الكلمة العربية "يكوّر" تأتي من "الكُرة" — الكلمة نفسها! القرآن اختار مادة "ك و ر" ليصف دوران الليل والنهار — وهي المادة اللغوية التي تعني الكروية.',wow_label:'الكلمة تحمل المعنى'}
+  ]}
+};
+
+let cat='sci', idx=0, isAnim=false;
+const reelEl=document.getElementById('reel');
+const progRow=document.getElementById('progressRow');
+const catsRow=document.getElementById('catsRow');
+const navDots=document.getElementById('navDots');
+const counter=document.getElementById('counter');
+
+function getCards(){return DATA[cat].cards}
+function getColor(){return DATA[cat].color}
+function getDim(){return DATA[cat].dim}
+
+function buildCats(){
+  Object.entries(DATA).forEach(([k,v])=>{
+    const b=document.createElement('button');
+    b.className='cat'+(k===cat?' on':'');
+    if(k===cat){b.style.background=v.color;b.style.borderColor=v.color;b.style.color='var(--card)'}
+    b.textContent=v.label;
+    b.onclick=()=>switchCat(k,b);
+    catsRow.appendChild(b);
+  });
+}
+
+function switchCat(k,btn){
+  if(k===cat||isAnim)return;
+  cat=k;idx=0;
+  document.querySelectorAll('.cat').forEach(b=>{
+    b.className='cat';b.style.background='';b.style.borderColor='';b.style.color='';
+  });
+  btn.className='cat on';
+  btn.style.background=getColor();btn.style.borderColor=getColor();btn.style.color='var(--card)';
+  renderAll();
+}
+
+function buildProgress(){
+  progRow.innerHTML='';
+  getCards().forEach((_,i)=>{
+    const seg=document.createElement('div');seg.className='prog-seg';
+    const fill=document.createElement('div');
+    fill.className='prog-fill'+(i<idx?' done':'');
+    fill.style.background=getColor();
+    fill.style.width=(i<=idx)?'100%':'0%';
+    seg.appendChild(fill);progRow.appendChild(seg);
+  });
+}
+
+function buildDots(){
+  navDots.innerHTML='';
+  getCards().forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='ndot'+(i===idx?' on':'');
+    if(i===idx){d.style.background=getColor();d.style.borderColor=getColor();}
+    d.onclick=()=>jumpTo(i);
+    navDots.appendChild(d);
+  });
+}
+
+function cardHTML(card){
+  const c=getColor(),dim=getDim();
+  const hasNum=!!card.num;
+  return `
+    <div class="c-top-strip" style="background:${c}"></div>
+    <div class="c-inner-orn">
+      <div class="c-orn-line"></div>
+      <div class="c-orn-dm" style="border-color:${c}"></div>
+      <div class="c-orn-line"></div>
+    </div>
+    <div class="c-body">
+      <div class="c-badge" style="background:${dim};border-color:${c}60;color:${c}">
+        <div class="c-badge-dot" style="background:${c}"></div>
+        ${DATA[cat].label}
+      </div>
+      ${hasNum?`<div class="c-num-block"><div class="c-num" style="color:${c}">${card.num}</div><div class="c-num-label">${card.num_label}</div></div>`:''}
+      <div class="c-title">${card.title}</div>
+      <div class="c-ayah-wrap">
+        <div class="c-ayah">${card.ayah}</div>
+        <div class="c-ref">${card.ref}</div>
+      </div>
+      <div class="c-scroll">
+        <div class="c-fact">${card.fact}</div>
+        <div class="c-wow">
+          <div class="c-wow-label">${card.wow_label}</div>
+          <div class="c-wow-text">${card.wow}</div>
+        </div>
+      </div>
+    </div>
+    <div class="c-bot-orn">
+      <div class="c-bot-line"></div>
+      <div class="c-bot-dot"></div>
+      <div class="c-bot-dm"></div>
+      <div class="c-bot-dot"></div>
+      <div class="c-bot-line"></div>
+    </div>`;
+}
+
+function renderAll(){
+  counter.textContent=`${idx+1} / ${getCards().length}`;
+  buildProgress();buildDots();renderCard();
+}
+
+function renderCard(){
+  reelEl.innerHTML='';
+  const card=document.createElement('div');
+  card.className='card fade-in';
+  card.innerHTML=cardHTML(getCards()[idx]);
+  reelEl.appendChild(card);
+}
+
+function go(dir){
+  if(isAnim)return;
+  const cards=getCards(),nIdx=idx+dir;
+  if(nIdx<0||nIdx>=cards.length){
+    const card=reelEl.querySelector('.card');if(!card)return;
+    card.style.transition='transform .15s';
+    card.style.transform=`translateX(${dir>0?-10:10}px)`;
+    setTimeout(()=>{card.style.transform='translateX(0)'},150);
+    return;
+  }
+  isAnim=true;
+  const oldCard=reelEl.querySelector('.card');
+  const newCard=document.createElement('div');
+  newCard.className='card '+(dir>0?'next':'prev');
+  newCard.innerHTML=cardHTML(cards[nIdx]);
+  reelEl.appendChild(newCard);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      if(oldCard){oldCard.style.transition='transform .35s cubic-bezier(.4,0,.2,1),opacity .35s';oldCard.style.transform=`translateX(${dir>0?'100%':'-100%'})`;oldCard.style.opacity='0';}
+      newCard.className='card';newCard.style.transition='transform .35s cubic-bezier(.4,0,.2,1),opacity .35s';
+      setTimeout(()=>{if(oldCard)oldCard.remove();idx=nIdx;isAnim=false;counter.textContent=`${idx+1} / ${getCards().length}`;buildProgress();buildDots();},380);
+    });
+  });
+}
+
+function jumpTo(i){if(i===idx||isAnim)return;const dir=i>idx?1:-1;idx=i-dir;go(dir);}
+
+let tx=0,ty=0;
+reelEl.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+reelEl.addEventListener('touchend',e=>{
+  const dx=tx-e.changedTouches[0].clientX,dy=ty-e.changedTouches[0].clientY;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)go(dx>0?1:-1);
+},{passive:true});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1);});
+
+function openModal(){document.getElementById('modalBg').classList.add('show');}
+function closeModal(e){if(!e||e.target===document.getElementById('modalBg'))document.getElementById('modalBg').classList.remove('show');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function copyHTML(){navigator.clipboard.writeText(window.location.href).then(()=>showToast('تم نسخ الرابط!')).catch(()=>showToast('افتح الملف في المتصفح'));closeModal();}
+function downloadFile(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='موسوعة-الإعجاز-القرآني.html';a.click();
+  closeModal();showToast('جاري التحميل...');
+}
+function copyCurrentCard(){
+  const card=getCards()[idx];
+  const text=`${card.title}\n\n${card.ayah}\n${card.ref}\n\n${card.fact}\n\n— موسوعة الإعجاز القرآني`;
+  navigator.clipboard.writeText(text).then(()=>showToast('تم نسخ البطاقة!')).catch(()=>{});
+  closeModal();
+}
+function hideSplash(){document.getElementById('splash').classList.add('hidden');setTimeout(()=>document.getElementById('splash').remove(),500);}
+
+buildCats();renderAll();
+</script>
+</body>
+</html>
